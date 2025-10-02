@@ -1,7 +1,46 @@
 return {
-  "nvim-treesitter/nvim-treesitter-context",
-  name = "treesitter-context",
-  opts = {
+  -- TODO: add treesitter text objects
+  {
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
+    event = { "BufReadPre", "BufNewFile" },
+    cmd = { "TSUpdate", "TSInstall", "TSUninstall" },
+    opts = {
+      highlight = { enable = true },
+      indent = { enable = true },
+      ensure_installed = {
+        "bash",
+        "c",
+        "diff",
+        "html",
+        "javascript",
+        "jsdoc",
+        "json",
+        "jsonc",
+        "lua",
+        "luadoc",
+        "luap",
+        "markdown",
+        "markdown_inline",
+        "printf",
+        "python",
+        "query",
+        "regex",
+        "toml",
+        "tsx",
+        "typescript",
+        "vim",
+        "vimdoc",
+        "xml",
+        "yaml",
+      },
+      auto_install = true,
+    },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    event = { "BufReadPre", "BufNewFile" },
     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
     multiwindow = false, -- Enable multiwindow support.
     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.

@@ -48,23 +48,20 @@ return {
         treesitter_context = true,
         which_key = true,
       },
-    },
-    specs = {
-      {
-        "akinsho/bufferline.nvim",
-        optional = true,
-        opts = function(_, opts)
-          if (vim.g.colors_name or ""):find("catppuccin") then
-            opts.highlights = require("catppuccin.groups.integrations.bufferline").get_theme()
-          end
-        end,
+      spec = {
+        {
+          "akinsho/bufferline.nvim",
+          optional = true,
+          opts = function(_, opts)
+            if (vim.g.colors_name or ""):find("catppuccin") then
+              opts.highlights = require("catppuccin.special.bufferline").get_theme()
+            end
+          end,
+        },
       },
     },
-  },
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "catppuccin",
-    },
+    config = function()
+      vim.cmd.colorscheme("catppuccin")
+    end,
   },
 }
