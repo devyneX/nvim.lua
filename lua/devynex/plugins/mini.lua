@@ -23,4 +23,33 @@ return {
       },
     },
   },
+  {
+    "echasnovski/mini.hipatterns",
+    version = false,
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      delay = {
+        -- How much to wait for update after every text change
+        text_change = 200,
+
+        -- How much to wait for update after window scroll
+        scroll = 50,
+      },
+    },
+    config = function(_opts)
+      local hipatterns = require("mini.hipatterns")
+      local opts = {
+        highlighters = {
+          -- Highlight hex color strings (`#rrggbb`) using that color
+          -- #654321
+          hex_color = hipatterns.gen_highlighter.hex_color(),
+          -- TODO: get highlighter for #rgb color strings
+          -- TODO: get highlighter for rgba(r, g, b, a) colors
+        },
+      }
+
+      opts = vim.tbl_deep_extend("force", opts, _opts or {})
+      hipatterns.setup(opts)
+    end,
+  },
 }

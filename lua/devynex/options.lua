@@ -21,6 +21,7 @@ vim.o.hlsearch = true
 -- indentation
 vim.o.expandtab = true -- use space instead of \t
 vim.o.tabstop = 2 -- spaces per tab
+vim.o.softtabstop = 2 -- spaces per tab
 vim.o.shiftwidth = 2 -- spaces per tab
 vim.o.shiftround = true -- round indent to nearest shiftwidth
 vim.o.smartindent = true -- smart autoindent
