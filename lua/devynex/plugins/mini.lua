@@ -3,7 +3,7 @@ return {
     "nvim-mini/mini.pairs",
     version = false,
     event = { "BufReadPre", "BufNewFile" },
-    opts = {}
+    opts = {},
   },
   {
     "nvim-mini/mini.surround",
@@ -13,8 +13,8 @@ return {
       mappings = {
         add = "gsa", -- Add surrounding in Normal and Visual modes
         delete = "gsd", -- Delete surrounding
-        find = "gsF", -- Find surrounding (to the right)
-        find_left = "gsf", -- Find surrounding (to the left)
+        find = "gsf", -- Find surrounding (to the right)
+        find_left = "gsF", -- Find surrounding (to the left)
         highlight = "gsh", -- Highlight surrounding
         replace = "gsr", -- Replace surrounding
 
