@@ -1,59 +1,123 @@
 return {
+  -- main completion plugin
   {
     "saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
-    -- optional: provides snippets for the snippet source
-    -- TODO: add luasnip and supermaven
-    dependencies = { "rafamadriz/friendly-snippets" },
-
-    -- use a release tag to download pre-built binaries
     version = "1.*",
-    -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
-    -- build = 'cargo build --release',
-    -- If you use nix, you can build from source using latest nightly rust with:
-    -- build = 'nix run .#build-plugin',
+    dependencies = {
+      {
+        "L3MON4D3/LuaSnip",
+        version = "v2.*",
+        build = "make install_jsregexp",
+        dependencies = {
+          "rafamadriz/friendly-snippets",
+          config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
+            require("luasnip.loaders.from_vscode").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
+          end,
+        },
+      },
+    },
 
     ---@module 'blink.cmp'
     ---@type blink.cmp.Config
     opts = {
-      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
-      -- 'super-tab' for mappings similar to vscode (tab to accept)
-      -- 'enter' for enter to accept
-      -- 'none' for no mappings
-      --
-      -- All presets have the following mappings:
-      -- C-space: Open menu or open docs if already open
-      -- C-n/C-p or Up/Down: Select next/previous item
-      -- C-e: Hide menu
-      -- C-k: Toggle signature help (if signature.enabled = true)
-      --
-      -- See :h blink-cmp-config-keymap for defining your own keymap
+      -- tab to complete
       keymap = { preset = "super-tab" },
 
       appearance = {
-        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
-        -- Adjusts spacing to ensure icons are aligned
         nerd_font_variant = "mono",
       },
 
-      -- (Default) Only show the documentation popup when manually triggered
       completion = {
         documentation = { auto_show = true },
+        -- preview the selection
+        ghost_text = {
+          enabled = true,
+        },
+        menu = {
+          -- show icon for what kind of item is being selected
+          draw = {
+            padding = { 0, 1 }, -- padding only on right side
+            components = {
+              kind_icon = {
+                text = function(ctx)
+                  return " " .. ctx.kind_icon .. ctx.icon_gap .. " "
+                end,
+              },
+            },
+          },
+
+          -- the following is to prevent menu to overlap with multiline ghost_text
+          direction_priority = function()
+            local ctx = require("blink.cmp").get_context()
+            local item = require("blink.cmp").get_selected_item()
+            if ctx == nil or item == nil then
+              return { "s", "n" }
+            end
+
+            local item_text = item.textEdit ~= nil and item.textEdit.newText or item.insertText or item.label
+            local is_multi_line = item_text:find("\n") ~= nil
+
+            -- after showing the menu upwards, we want to maintain that direction
+            -- until we re-open the menu, so store the context id in a global variable
+            if is_multi_line or vim.g.blink_cmp_upwards_ctx_id == ctx.id then
+              vim.g.blink_cmp_upwards_ctx_id = ctx.id
+              return { "n", "s" }
+            end
+            return { "s", "n" }
+          end,
+        },
       },
 
-      -- Default list of enabled providers defined so that you can extend it
-      -- elsewhere in your config, without redefining it, due to `opts_extend`
+      snippets = {
+        preset = "luasnip",
+      },
+
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
       },
 
-      -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
-      -- You may use a lua implementation instead by using `implementation = "lua"` or fallback to the lua implementation,
-      -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
-      --
-      -- See the fuzzy documentation for more information
       fuzzy = { implementation = "prefer_rust_with_warning" },
     },
     opts_extend = { "sources.default" },
+  },
+
+  -- compatibility with external completion
+  {
+    "saghen/blink.compat",
+    -- use v2.* for blink.cmp v1.*
+    version = "2.*",
+    -- lazy.nvim will automatically load the plugin when it's required by blink.cmp
+    lazy = true,
+    -- make sure to set opts so that lazy.nvim calls blink.compat's setup
+    opts = {},
+  },
+
+  -- supermaven
+  {
+    "supermaven-inc/supermaven-nvim",
+    event = { "InsertEnter", "CmdlineEnter" },
+    opts = {
+      disable_inline_completion = true, -- disables inline completion for use with cmp
+      disable_keymaps = true, -- disables built in keymaps for more manual control
+    },
+    specs = {
+      {
+        "saghen/blink.cmp",
+        opts = {
+          sources = {
+            default = { "supermaven" },
+            providers = {
+              supermaven = {
+                name = "supermaven",
+                module = "blink.compat.source",
+                score_offset = 1000,
+              },
+            },
+          },
+        },
+      },
+    },
   },
 }
