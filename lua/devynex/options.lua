@@ -7,8 +7,6 @@ vim.o.relativenumber = true
 
 vim.o.mouse = "a"
 
-vim.o.showmode = false -- already in statusline
-
 -- use same clipboard as os
 -- scheduled to decrease startup time
 vim.schedule(function()
@@ -20,9 +18,30 @@ vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.hlsearch = true
 
+-- indentation
 vim.o.expandtab = true -- use space instead of \t
-
+vim.o.tabstop = 2 -- spaces per tab
+vim.o.shiftwidth = 2 -- spaces per tab
+vim.o.shiftround = true -- round indent to nearest shiftwidth
+vim.o.smartindent = true -- smart autoindent
 vim.o.list = true -- tab/spaces visual display
+
+-- vim.o.fillchars = {
+--   foldopen = "",
+--   foldclose = "",
+--   fold = " ",
+--   foldsep = " ",
+--   diff = "╱",
+--   eob = " ",
+-- }
+
+-- folding
+function _G.MyFoldText()
+  local line = vim.fn.getline(vim.v.foldstart)
+  local count = vim.v.foldend - vim.v.foldstart + 1
+  return string.format("%d:%d - %d lines folded - %s", vim.v.foldstart, vim.v.foldend, count, line)
+end
+vim.o.foldtext = "v:lua.MyFoldText()"
 
 vim.o.signcolumn = "yes"
 
@@ -39,6 +58,8 @@ vim.o.undolevels = 10000
 
 -- confirm
 vim.o.confirm = true
+
+vim.o.scrolloff = 10 -- keep 10 lines above and below cursor
 
 -- python
 vim.g.python3_host_prog = "/home/luffy/Documents/Dev/.uv-venv/nvim-python/bin/python"
