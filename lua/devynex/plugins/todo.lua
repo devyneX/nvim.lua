@@ -1,10 +1,14 @@
 return {
   "folke/todo-comments.nvim",
-  event = { "BufReadPre", "BufNewFile" },
   dependencies = { "nvim-lua/plenary.nvim" },
-  opts = {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
+  cmd = { "TodoTrouble", "TodoTelescope" },
+  event = { "BufReadPre", "BufNewFile" },
+  opts = {},
+  -- stylua: ignore
+  keys = {
+    { "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
+    { "[t", function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment" },
+    { "<leader>st", function() Snacks.picker.todo_comments() end, desc = "Todo" },
+    { "<leader>sT", function () Snacks.picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } }) end, desc = "Todo/Fix/Fixme" },
+  },
 }
