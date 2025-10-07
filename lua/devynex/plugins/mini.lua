@@ -36,9 +36,9 @@ return {
         scroll = 50,
       },
     },
-    config = function(_opts)
+    config = function(_, opts)
       local hipatterns = require("mini.hipatterns")
-      local opts = {
+      local _opts = {
         highlighters = {
           -- Highlight hex color strings (`#rrggbb`) using that color
           -- #654321
@@ -47,8 +47,8 @@ return {
           -- TODO: get highlighter for rgba(r, g, b, a) colors
         },
       }
-
-      opts = vim.tbl_deep_extend("force", opts, _opts or {})
+ 
+      opts = vim.tbl_deep_extend("force", opts, _opts)
       hipatterns.setup(opts)
     end,
   },
