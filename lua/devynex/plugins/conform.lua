@@ -28,9 +28,18 @@ return {
       -- Conform will run the first available formatter
       javascript = { "prettierd", "prettier", stop_after_first = true },
     },
-    format_on_save = {
-      timeout_ms = 500,
-      lsp_format = "fallback",
-    },
   },
+  config = function(_, opts)
+    if vim.g.custom_autoformat ~= false then
+      local opts_extends = {
+        format_on_save = {
+          timeout_ms = 500,
+          lsp_format = "fallback",
+        },
+      }
+      opts = vim.tbl_deep_extend("force", opts, opts_extends)
+    end
+
+    require("conform").setup(opts)
+  end,
 }
