@@ -1,11 +1,10 @@
 return {
-  -- TODO: add treesitter text objects
   {
     "nvim-treesitter/nvim-treesitter",
     branch = "main",
     build = ":TSUpdate",
     event = { "BufReadPre", "BufNewFile" },
-    cmd = { "TSUpdate", "TSInstall", "TSUninstall" },
+    cmd = { "TSUpdate", "TSInstall", "TSUninstall", "TSLog" },
     opts = {
       highlight = { enable = true },
       indent = { enable = true },
@@ -54,5 +53,131 @@ return {
     separator = nil,
     zindex = 20, -- The Z-index of the context window
     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
+    event = { "BufReadPre", "BufNewFile" },
+
+    opts = {
+      move = {
+        set_jumps = true, -- whether to set jumps in the jumplist
+      },
+      select = {
+        -- Automatically jump forward to textobj, similar to targets.vim
+        lookahead = true,
+
+        -- You can choose the select mode (default is charwise 'v')
+        --
+        -- Can also be a function which gets passed a table with the keys
+        -- * query_string: eg '@function.inner'
+        -- * method: eg 'v' or 'o'
+        -- and should return the mode ('v', 'V', or '<c-v>') or a table
+        -- mapping query_strings to modes.
+        selection_modes = {
+          ["@parameter.outer"] = "v", -- charwise
+          ["@function.outer"] = "V", -- linewise
+          ["@class.outer"] = "<c-v>", -- blockwise
+        },
+        -- If you set this to `true` (default is `false`) then any textobject is
+        -- extended to include preceding or succeeding whitespace. Succeeding
+        -- whitespace has priority in order to act similarly to eg the built-in
+        -- `ap`.
+        --
+        -- Can also be a function which gets passed a table with the keys
+        -- * query_string: eg '@function.inner'
+        -- * selection_mode: eg 'v'
+        -- and should return true or false
+        include_surrounding_whitespace = true,
+      },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter-textobjects").setup(opts)
+
+      --select
+      vim.keymap.set({ "x", "o" }, "af", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@function.outer", "textobjects")
+      end, { desc = "Select around function (outer)" })
+
+      vim.keymap.set({ "x", "o" }, "if", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@function.inner", "textobjects")
+      end, { desc = "Select inside function (inner)" })
+
+      vim.keymap.set({ "x", "o" }, "ac", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@class.outer", "textobjects")
+      end, { desc = "Select around class (outer)" })
+
+      vim.keymap.set({ "x", "o" }, "ic", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@class.inner", "textobjects")
+      end, { desc = "Select inside class (inner)" })
+
+      vim.keymap.set({ "x", "o" }, "as", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@local.scope", "locals")
+      end, { desc = "Select around local scope" })
+
+      -- swap
+      vim.keymap.set("n", "<leader>a", function()
+        require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
+      end, { desc = "Swap next parameter" })
+
+      vim.keymap.set("n", "<leader>A", function()
+        require("nvim-treesitter-textobjects.swap").swap_previous("@parameter.outer")
+      end, { desc = "Swap previous parameter" })
+
+      -- move
+      vim.keymap.set({ "n", "x", "o" }, "]f", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@function.inner", "textobjects")
+      end, { desc = "Go to next start of function (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]c", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@class.inner", "textobjects")
+      end, { desc = "Go to next start of class (inner)" })
+
+      -- Uncomment to enable
+      -- vim.keymap.set({ "n", "x", "o" }, "]o", function()
+      --   require("nvim-treesitter-textobjects.move").goto_next_start({ "@loop.inner", "@loop.outer" }, "textobjects")
+      -- end, { desc = "Go to next start of loop (inner or outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]s", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@local.scope", "locals")
+      end, { desc = "Go to next start of local scope" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]z", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
+      end, { desc = "Go to next start of fold" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]F", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
+      end, { desc = "Go to next end of function (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]C", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
+      end, { desc = "Go to next end of class (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[f", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@function.inner", "textobjects")
+      end, { desc = "Go to previous start of function (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[c", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@class.inner", "textobjects")
+      end, { desc = "Go to previous start of class (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[F", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer", "textobjects")
+      end, { desc = "Go to previous end of function (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[C", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
+      end, { desc = "Go to previous end of class (outer)" })
+
+      -- Uncomment to enable
+      -- vim.keymap.set({ "n", "x", "o" }, "]d", function()
+      --   require("nvim-treesitter-textobjects.move").goto_next("@conditional.outer", "textobjects")
+      -- end, { desc = "Go to next conditional (outer), start or end whichever is closer" })
+
+      -- vim.keymap.set({ "n", "x", "o" }, "[d", function()
+      --   require("nvim-treesitter-textobjects.move").goto_previous("@conditional.outer", "textobjects")
+      -- end, { desc = "Go to previous conditional (outer), start or end whichever is closer" })
+    end,
   },
 }
