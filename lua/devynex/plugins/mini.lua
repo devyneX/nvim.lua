@@ -38,17 +38,59 @@ return {
     },
     config = function(_, opts)
       local hipatterns = require("mini.hipatterns")
+
       local _opts = {
         highlighters = {
-          -- Highlight hex color strings (`#rrggbb`) using that color
-          -- #654321
+          -- Full hex - #ffaa33
           hex_color = hipatterns.gen_highlighter.hex_color(),
-          -- TODO: get highlighter for #rgb color strings
-          -- TODO: get highlighter for rgba(r, g, b, a) colors
+
+          -- hex with alpha (alpha is ignored) - #ffaa33aa -> #ffaa33
+          hex_color_alpha = {
+            pattern = "%f[#]#%x%x%x%x%x%x%x%x%f[%W]",
+            group = function(_, match)
+              local r = match:sub(2, 3)
+              local g = match:sub(4, 5)
+              local b = match:sub(6, 7)
+              local hex = "#" .. r .. g .. b
+              return hipatterns.compute_hex_color_group(hex, "bg")
+            end,
+          },
+
+          -- Short hex #aaf -> #aaaaff
+          short_hex = {
+            pattern = "%f[#]#%x%x%x%f[%W]",
+            group = function(_, match)
+              local r = string.rep(match:sub(2, 2), 2)
+              local g = string.rep(match:sub(3, 3), 2)
+              local b = string.rep(match:sub(4, 4), 2)
+              local hex = "#" .. r .. g .. b
+              return hipatterns.compute_hex_color_group(hex, "bg")
+            end,
+          },
+
+          -- rgb(r, g, b) - rgb(123, 123, 123)
+          rgb = {
+            pattern = "rgb%s*%(%s*%d%d?%d?%s*,%s*%d%d?%d?%s*,%s*%d%d?%d?%s*%)",
+            group = function(_, match)
+              local r, g, b = match:match("(%d+)%s*,%s*(%d+)%s*,%s*(%d+)")
+              local hex = string.format("#%02x%02x%02x", r, g, b)
+              return hipatterns.compute_hex_color_group(hex, "bg")
+            end,
+          },
+
+          -- RGBA colors (alpha ignored) - rgba(123, 123, 123, 0.5) - rgb(123, 123, 123)
+          rgba = {
+            pattern = "rgba%s*%(%s*%d%d?%d?%s*,%s*%d%d?%d?%s*,%s*%d%d?%d?%s*,%s*%d?%.?%d+%s*%)",
+            group = function(_, match)
+              local r, g, b = match:match("(%d+)%s*,%s*(%d+)%s*,%s*(%d+)")
+              local hex = string.format("#%02x%02x%02x", r, g, b)
+              return hipatterns.compute_hex_color_group(hex, "bg")
+            end,
+          },
         },
       }
- 
-      opts = vim.tbl_deep_extend("force", opts, _opts)
+
+      opts = vim.tbl_deep_extend("force", _opts, opts or {})
       hipatterns.setup(opts)
     end,
   },
