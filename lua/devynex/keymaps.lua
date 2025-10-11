@@ -58,7 +58,6 @@ vim.keymap.set({ "n", "v" }, "gg", "gg0", { desc = "jump to the start first line
 -- Last line, last character
 vim.keymap.set({ "n", "v" }, "G", "G$", { desc = "Jump to the end of the last line" })
 
--- TODO: doesn't work
 vim.keymap.set("n", "<leader>sf", function()
   vim.ui.input({ prompt = "Glob pattern (e.g. *.js): " }, function(glob)
     if not glob or glob == "" then
@@ -66,16 +65,7 @@ vim.keymap.set("n", "<leader>sf", function()
     end
 
     Snacks.picker.grep({
-      glob_pattern = glob,
-      prompt_title = "Live Grep in " .. glob,
-      default_text = "",
+      glob = glob,
     })
   end)
-end, { desc = "Search in FileType" })
-
--- TODO: need to figure this out
--- vim.keymap.set("n", "<leader>.", function()
---   local snacks = require("lazy/snacks.nvim")
---   snacks.opts.picker.files.hidden = true
---   snacks.opts.explorer.files.hidden = true
--- end, { desc = "Toggle hidden files in explorer" })
+end, { desc = "Search (Glob)" })
