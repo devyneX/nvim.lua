@@ -125,52 +125,78 @@ return {
       end, { desc = "Swap previous parameter" })
 
       -- move
+      vim.keymap.set({ "n", "x", "o" }, "[a", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@parameter.inner", "textobjects")
+      end, { desc = "Go to previous start of parameter (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]A", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@parameter.outer", "textobjects")
+      end, { desc = "Go to next end of parameter (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[A", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@parameter.outer", "textobjects")
+      end, { desc = "Go to previous end of parameter (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]a", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@parameter.inner", "textobjects")
+      end, { desc = "Go to next start of parameter (inner)" })
+
       vim.keymap.set({ "n", "x", "o" }, "]f", function()
-        require("nvim-treesitter-textobjects.move").goto_next_start("@function.inner", "textobjects")
+        require("nvim-treesitter-textobjects.move").goto_next_start("@function.outer", "textobjects")
       end, { desc = "Go to next start of function (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[f", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
+      end, { desc = "Go to previous start of function (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[F", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@function.inner", "textobjects")
+      end, { desc = "Go to previous end of function (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]F", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@function.inner", "textobjects")
+      end, { desc = "Go to next end of function (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[c", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@class.inner", "textobjects")
+      end, { desc = "Go to previous start of class (inner)" })
 
       vim.keymap.set({ "n", "x", "o" }, "]c", function()
         require("nvim-treesitter-textobjects.move").goto_next_start("@class.inner", "textobjects")
       end, { desc = "Go to next start of class (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]C", function()
+        require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
+      end, { desc = "Go to next end of class (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[C", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
+      end, { desc = "Go to previous end of class (outer)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[S", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@local.scope", "locals")
+      end, { desc = "Go to previous start of local scope" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]S", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@local.scope", "locals")
+      end, { desc = "Go to next start of local scope" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[z", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@fold", "folds")
+      end, { desc = "Go to previous start of fold" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]z", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
+      end, { desc = "Go to next start of fold" })
+
+      -- change
+      -- TODO: figure out chaning next param, prev param, next func, prev func etc
 
       -- Uncomment to enable
       -- vim.keymap.set({ "n", "x", "o" }, "]o", function()
       --   require("nvim-treesitter-textobjects.move").goto_next_start({ "@loop.inner", "@loop.outer" }, "textobjects")
       -- end, { desc = "Go to next start of loop (inner or outer)" })
 
-      vim.keymap.set({ "n", "x", "o" }, "]s", function()
-        require("nvim-treesitter-textobjects.move").goto_next_start("@local.scope", "locals")
-      end, { desc = "Go to next start of local scope" })
-
-      vim.keymap.set({ "n", "x", "o" }, "]z", function()
-        require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
-      end, { desc = "Go to next start of fold" })
-
-      vim.keymap.set({ "n", "x", "o" }, "]F", function()
-        require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
-      end, { desc = "Go to next end of function (outer)" })
-
-      vim.keymap.set({ "n", "x", "o" }, "]C", function()
-        require("nvim-treesitter-textobjects.move").goto_next_end("@class.outer", "textobjects")
-      end, { desc = "Go to next end of class (outer)" })
-
-      vim.keymap.set({ "n", "x", "o" }, "[f", function()
-        require("nvim-treesitter-textobjects.move").goto_previous_start("@function.inner", "textobjects")
-      end, { desc = "Go to previous start of function (inner)" })
-
-      vim.keymap.set({ "n", "x", "o" }, "[c", function()
-        require("nvim-treesitter-textobjects.move").goto_previous_start("@class.inner", "textobjects")
-      end, { desc = "Go to previous start of class (inner)" })
-
-      vim.keymap.set({ "n", "x", "o" }, "[F", function()
-        require("nvim-treesitter-textobjects.move").goto_previous_end("@function.outer", "textobjects")
-      end, { desc = "Go to previous end of function (outer)" })
-
-      vim.keymap.set({ "n", "x", "o" }, "[C", function()
-        require("nvim-treesitter-textobjects.move").goto_previous_end("@class.outer", "textobjects")
-      end, { desc = "Go to previous end of class (outer)" })
-
-      -- Uncomment to enable
       -- vim.keymap.set({ "n", "x", "o" }, "]d", function()
       --   require("nvim-treesitter-textobjects.move").goto_next("@conditional.outer", "textobjects")
       -- end, { desc = "Go to next conditional (outer), start or end whichever is closer" })

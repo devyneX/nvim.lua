@@ -24,6 +24,9 @@ return {
         {
           "<leader>b",
           group = "buffer",
+          expand = function()
+            return require("which-key.extras").expand.buf()
+          end,
         },
         {
           "<leader>w",
