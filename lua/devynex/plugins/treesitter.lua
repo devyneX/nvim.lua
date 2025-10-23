@@ -115,6 +115,14 @@ return {
         require("nvim-treesitter-textobjects.select").select_textobject("@local.scope", "locals")
       end, { desc = "Select around local scope" })
 
+      vim.keymap.set({ "x", "o" }, "a=", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@assignment.outer", "textobjects")
+      end, { desc = "Select around assignment (outer)" })
+
+      vim.keymap.set({ "x", "o" }, "i=", function()
+        require("nvim-treesitter-textobjects.select").select_textobject("@assignment.inner", "textobjects")
+      end, { desc = "Select inside assignment (inner)" })
+
       -- swap
       vim.keymap.set("n", "<leader>a", function()
         require("nvim-treesitter-textobjects.swap").swap_next("@parameter.inner")
@@ -188,6 +196,22 @@ return {
       vim.keymap.set({ "n", "x", "o" }, "]z", function()
         require("nvim-treesitter-textobjects.move").goto_next_start("@fold", "folds")
       end, { desc = "Go to next start of fold" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[(", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@call.inner", "textobjects")
+      end, { desc = "Go to previous start of function call (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "](", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@call.inner", "textobjects")
+      end, { desc = "Go to next end of function call (inner)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "[=", function()
+        require("nvim-treesitter-textobjects.move").goto_previous_start("@assignment.lhs", "textobjects")
+      end, { desc = "Go to previous start of assignment (lhs)" })
+
+      vim.keymap.set({ "n", "x", "o" }, "]=", function()
+        require("nvim-treesitter-textobjects.move").goto_next_start("@assignment.rhs", "textobjects")
+      end, { desc = "Go to next start of assignment (rhs)" })
 
       -- change
       -- TODO: figure out chaning next param, prev param, next func, prev func etc
