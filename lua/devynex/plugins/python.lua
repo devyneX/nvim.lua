@@ -7,23 +7,22 @@ return {
     },
     ft = "python", -- Load when opening Python files
     keys = {
-      { "cv", "<cmd>VenvSelect<cr>" }, -- Open picker on keymap
+      -- TODO: doesn't show up in which-key
+      { "cv", "<cmd>VenvSelect<cr>", desc = "Change venv" },
     },
     opts = { -- this can be an empty lua table - just showing below for clarity.
       search = {}, -- if you add your own searches, they go here.
       options = {}, -- if you add plugin options, they go here.
     },
-    -- TODO: doesn't work
-    -- specs = {
-    --   {
-    --     "nvim-lualine/lualine.nvim",
-    --     opts = {
-    --       sections = {
-    --         lualine_x = { "venv-selector" },
-    --       },
-    --     },
-    --   },
-    -- },
+    specs = {
+      {
+        "nvim-lualine/lualine.nvim",
+        opts = function(_, opts)
+          opts.sections.lualine_x = vim.tbl_deep_extend("force", opts.sections.lualine_x, { "venv-selector" })
+          return opts
+        end,
+      },
+    },
   },
   {
     "mfussenegger/nvim-dap-python",
