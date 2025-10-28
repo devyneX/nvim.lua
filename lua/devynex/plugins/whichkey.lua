@@ -8,7 +8,6 @@ return {
       {
         mode = { "n", "v" },
         { "<leader>c", group = "code" },
-        -- TODO: add after adding dap
         { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },

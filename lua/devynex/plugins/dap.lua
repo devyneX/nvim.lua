@@ -1,39 +1,111 @@
 return {
   {
     "mfussenegger/nvim-dap",
-    event = { "BufReadPre", "BufNewFile" },
-    config = function(_, opts)
-      local dap = require("dap")
-      dap.setup(opts)
+    -- event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    keys = {
+      {
+        "<leader>db",
+        function()
+          require("dap").toggle_breakpoint()
+        end,
+        desc = "Toggle Breakpoint",
+      },
+      {
+        "<leader>dB",
+        function()
+          require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+        end,
+        desc = "Set Breakpoint",
+      },
+      {
+        "<leader>dc",
+        function()
+          require("dap").continue()
+        end,
+        desc = "Continue",
+      },
+      {
+        "<leader>do",
+        function()
+          require("dap").step_over()
+        end,
+        desc = "Step Over",
+      },
+      {
+        "<leader>di",
+        function()
+          require("dap").step_into()
+        end,
+        desc = "Step Into",
+      },
+      {
+        "<leader>dO",
+        function()
+          require("dap").step_out()
+        end,
+        desc = "Step Out",
+      },
+      {
+        "<leader>dl",
+        function()
+          require("dap").run_last()
+        end,
+        desc = "Run Last",
+      },
+      {
+        "<leader>dr",
+        function()
+          require("dap").run_to_cursor()
+        end,
+        desc = "Run to Cursor",
+      },
+      {
+        "<leader>dt",
+        function()
+          require("dap").terminate()
+        end,
+        desc = "Terminate",
+      },
+      {
+        "<leader>ds",
+        function()
+          require("dap").stop()
+        end,
+        desc = "Stop",
+      },
+    },
+    -- FIX: whenever you enter a python file it gives a notification of a conflict
+    -- between vim-notify (noice) and some other plugin (likely dap related)
+    config = function()
+      -- thanks LazyVim
+      vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
-      -- keymaps
-      vim.keymap.set("n", "<leader>db", function()
-        dap.toggle_breakpoint()
-      end, { desc = "Toggle Breakpoint" })
-      vim.keymap.set("n", "<leader>dc", function()
-        dap.continue()
-      end, { desc = "Continue" })
-      vim.keymap.set("n", "<leader>do", function()
-        dap.step_over()
-      end, { desc = "Step Over" })
-      vim.keymap.set("n", "<leader>di", function()
-        dap.step_into()
-      end, { desc = "Step Into" })
-      vim.keymap.set("n", "<leader>dO", function()
-        dap.step_out()
-      end, { desc = "Step Out" })
-      vim.keymap.set("n", "<leader>dl", function()
-        dap.run_last()
-      end, { desc = "Run Last" })
-      vim.keymap.set("n", "<leader>dr", function()
-        dap.run_to_cursorY(1)
-      end, { desc = "Run to Cursor" })
-      vim.keymap.set("n", "<leader>dt", function()
-        dap.terminate()
-      end, { desc = "Terminate" })
-      vim.keymap.set("n", "<leader>ds", function()
-        dap.stop()
-      end, { desc = "Stop" })
+      -- icons
+      local icons = {
+        Stopped = { "󰁕 ", "DiagnosticWarn", "DapStoppedLine" },
+        Breakpoint = " ",
+        BreakpointCondition = " ",
+        BreakpointRejected = { " ", "DiagnosticError" },
+        LogPoint = ".>",
+      }
+
+      for name, sign in pairs(icons) do
+        sign = type(sign) == "table" and sign or { sign }
+        vim.fn.sign_define(
+          "Dap" .. name,
+          { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+        )
+      end
+
+      -- launch.json support
+      local vscode = require("dap.ext.vscode")
+      local json = require("plenary.json")
+      vscode.json_decode = function(str)
+        return vim.json.decode(json.json_strip_comments(str))
+      end
     end,
   },
   {
@@ -41,10 +113,34 @@ return {
     dependencies = {
       "mfussenegger/nvim-dap",
       "nvim-neotest/nvim-nio",
+      {
+
+        "folke/lazydev.nvim",
+        opts = {
+          library = { "nvim-dap-ui" },
+        },
+      },
     },
-    event = { "BufReadPre", "BufNewFile" },
+    lazy = true,
+    -- event = { "BufReadPre", "BufNewFile" },
+    keys = {
+      {
+        "<leader>du",
+        function()
+          require("dapui").toggle()
+        end,
+        desc = "Toggle UI",
+      },
+    },
+    specs = {
+      "mfussenegger/nvim-dap",
+      dependencies = {
+        "rcarriga/nvim-dap-ui",
+      },
+    },
     config = function()
       local dap, dapui = require("dap"), require("dapui")
+      dapui.setup()
       dap.listeners.before.attach.dapui_config = function()
         dapui.open()
       end
@@ -57,9 +153,58 @@ return {
       dap.listeners.before.event_exited.dapui_config = function()
         dapui.close()
       end
-
-      -- keymaps
-      -- vim.keymap.set("n", "<leader>du", dapui.toggle(), { desc = "Toggle UI" })
     end,
+  },
+  {
+    "theHamsta/nvim-dap-virtual-text",
+    -- event = { "BufReadPre", "BufNewFile" },
+    lazy = true,
+    keys = {
+      { "<leader>dv", "<cmd>DapVirtualTextToggle<cr>", desc = "Toggle Virtual Text" },
+    },
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+      enabled = true, -- enable this plugin (the default)
+      enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
+      highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
+      highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
+      show_stop_reason = true, -- show stop reason when stopped for exceptions
+      commented = false, -- prefix virtual text with comment string
+      only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
+      all_references = false, -- show virtual text on all all references of the variable (not only definitions)
+      clear_on_continue = false, -- clear virtual text on "continue" (might cause flickering when stepping)
+      --- A callback that determines how a variable is displayed or whether it should be omitted
+      --- @param variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
+      --- @param buf number
+      --- @param stackframe dap.StackFrame https://microsoft.github.io/debug-adapter-protocol/specification#Types_StackFrame
+      --- @param node userdata tree-sitter node identified as variable definition of reference (see `:h tsnode`)
+      --- @param options nvim_dap_virtual_text_options Current options for nvim-dap-virtual-text
+      --- @return string|nil A text how the virtual text should be displayed or nil, if this variable shouldn't be displayed
+      display_callback = function(variable, buf, stackframe, node, options)
+        -- by default, strip out new line characters
+        if options.virt_text_pos == "inline" then
+          return " = " .. variable.value:gsub("%s+", " ")
+        else
+          return variable.name .. " = " .. variable.value:gsub("%s+", " ")
+        end
+      end,
+      -- position of virtual text, see `:h nvim_buf_set_extmark()`, default tries to inline the virtual text. Use 'eol' to set to end of line
+      virt_text_pos = vim.fn.has("nvim-0.10") == 1 and "inline" or "eol",
+
+      -- experimental features:
+      all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
+      virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
+      virt_text_win_col = nil, -- position the virtual text at a fixed window column (starting from the first text column) ,
+      -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
+    },
+    specs = {
+      "mfussenegger/nvim-dap",
+      dependencies = {
+        "theHamsta/nvim-dap-virtual-text",
+      },
+    },
   },
 }

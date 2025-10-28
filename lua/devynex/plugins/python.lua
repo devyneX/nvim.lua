@@ -27,10 +27,15 @@ return {
   },
   {
     "mfussenegger/nvim-dap-python",
-    dependencies = {
-      "mfussenegger/nvim-dap",
+    lazy = true,
+    specs = {
+      {
+        "mfussenegger/nvim-dap",
+        dependencies = {
+          "mfussenegger/nvim-dap-python",
+        },
+      },
     },
-    events = { "BufReadPre", "BufNewFile" },
     config = function()
       require("dap-python").setup("uv")
     end,
