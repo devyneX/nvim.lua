@@ -2,7 +2,7 @@ return {
   {
     "akinsho/bufferline.nvim",
     version = "*",
-    event = "VeryLazy",
+    event = { "BufReadPre", "BufNewFile" },
     dependencies = "nvim-tree/nvim-web-devicons",
     keys = {
       { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
@@ -20,7 +20,7 @@ return {
       options = {
         separator_style = "slant",
         indicator = {
-          style = "underline"
+          style = "underline",
         },
       -- stylua: ignore
       close_command = function(n) Snacks.bufdelete(n) end,
