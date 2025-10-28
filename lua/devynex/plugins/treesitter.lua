@@ -213,9 +213,6 @@ return {
         require("nvim-treesitter-textobjects.move").goto_next_start("@assignment.rhs", "textobjects")
       end, { desc = "Go to next start of assignment (rhs)" })
 
-      -- change
-      -- TODO: figure out chaning next param, prev param, next func, prev func etc
-
       -- Uncomment to enable
       -- vim.keymap.set({ "n", "x", "o" }, "]o", function()
       --   require("nvim-treesitter-textobjects.move").goto_next_start({ "@loop.inner", "@loop.outer" }, "textobjects")

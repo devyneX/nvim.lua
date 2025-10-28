@@ -12,6 +12,12 @@ vim.keymap.set({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Do
 vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 vim.keymap.set({ "n", "x" }, "<Up>", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true, silent = true })
 
+-- tabpages
+vim.keymap.set("n", "<TAB>n", "<cmd>tabnew<cr>", { desc = "New Tab" })
+vim.keymap.set("n", "<TAB>q", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+vim.keymap.set("n", "<TAB>l", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+vim.keymap.set("n", "<TAB>h", "<cmd>tabprevious<cr>", { desc = "Previous Tab" })
+
 -- windows
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to Left Window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Go to Lower Window" })
