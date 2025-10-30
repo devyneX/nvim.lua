@@ -4,6 +4,7 @@ return {
     dependencies = {
       "neovim/nvim-lspconfig",
       "folke/snacks.nvim",
+      "nvim-lualine/lualine.nvim",
     },
     ft = "python", -- Load when opening Python files
     keys = {
@@ -14,15 +15,14 @@ return {
       search = {}, -- if you add your own searches, they go here.
       options = {}, -- if you add plugin options, they go here.
     },
-    specs = {
-      {
-        "nvim-lualine/lualine.nvim",
-        opts = function(_, opts)
-          opts.sections.lualine_x = vim.tbl_deep_extend("force", opts.sections.lualine_x, { "venv-selector" })
-          return opts
-        end,
-      },
-    },
+    config = function(_, opts)
+      require("venv-selector").setup(opts)
+      local lualine = require("lualine")
+      local lualine_conf = lualine.get_config()
+      lualine_conf.sections.lualine_x =
+        vim.tbl_deep_extend("force", lualine_conf.sections.lualine_x, { "venv-selector" })
+      lualine.setup(lualine_conf)
+    end,
   },
   {
     "mfussenegger/nvim-dap-python",
