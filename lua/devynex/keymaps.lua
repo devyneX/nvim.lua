@@ -30,6 +30,27 @@ vim.keymap.set("n", "<leader>wv", "<C-W>v", { desc = "Split Window Right" })
 vim.keymap.set("n", "<leader>wd", "<C-W>c", { desc = "Delete Window" })
 vim.keymap.set("n", "<leader>ww", "<C-W>w", { desc = "Switch Window" })
 
+-- resizing windows
+-- Resize window: decrease width
+vim.keymap.set("n", "<C-Left>", function()
+  vim.cmd("vertical resize -2")
+end, { desc = "Decrease window width" })
+
+-- Resize window: increase width
+vim.keymap.set("n", "<C-Right>", function()
+  vim.cmd("vertical resize +2")
+end, { desc = "Increase window width" })
+
+-- Resize window: increase height
+vim.keymap.set("n", "<C-Up>", function()
+  vim.cmd("resize +2")
+end, { desc = "Increase window height" })
+
+-- Resize window: decrease height
+vim.keymap.set("n", "<C-Down>", function()
+  vim.cmd("resize -2")
+end, { desc = "Decrease window height" })
+
 -- buffers
 vim.keymap.set("n", "<leader>bb", "<cmd>e #<cr>", { desc = "Switch to Other Buffer" })
 vim.keymap.set("n", "<leader>bo", function()
