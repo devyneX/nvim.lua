@@ -19,8 +19,7 @@ return {
       require("venv-selector").setup(opts)
       local lualine = require("lualine")
       local lualine_conf = lualine.get_config()
-      lualine_conf.sections.lualine_x =
-        vim.tbl_deep_extend("force", lualine_conf.sections.lualine_x, { "venv-selector" })
+      lualine_conf.sections.lualine_x = vim.list_extend(lualine_conf.sections.lualine_x, { "venv-selector" })
       lualine.setup(lualine_conf)
     end,
   },
