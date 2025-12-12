@@ -8,8 +8,7 @@ return {
     },
     ft = "python", -- Load when opening Python files
     keys = {
-      -- TODO: doesn't show up in which-key
-      { "cv", "<cmd>VenvSelect<cr>", desc = "Change venv" },
+      { "<leader>cv", "<cmd>VenvSelect<cr>", desc = "Change venv" },
     },
     opts = { -- this can be an empty lua table - just showing below for clarity.
       search = {}, -- if you add your own searches, they go here.
