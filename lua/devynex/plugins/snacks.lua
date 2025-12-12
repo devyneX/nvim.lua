@@ -18,6 +18,11 @@ return {
       },
     },
     explorer = { enabled = true },
+    -- TODO: image and diagram support?!
+    -- image = {
+    --   enabled = true,
+    -- },
+
     -- shows the indentation scope lines
     indent = { enabled = true },
     input = { enabled = true },
