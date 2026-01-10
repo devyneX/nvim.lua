@@ -63,10 +63,10 @@ vim.o.confirm = true
 vim.o.scrolloff = 10 -- keep 10 lines above and below cursor
 
 -- python
-vim.g.python3_host_prog = "/home/luffy/Documents/Dev/.uv-venv/nvim-python/bin/python"
+vim.g.python3_host_prog = "$HOME/Documents/Dev/.uv-venv/nvim-python/bin/python"
 
 -- nodejs
-vim.g.node_host_prog = "/home/luffy/.config/nvm/versions/node/v24.5.0/bin/neovim-node-host"
+vim.g.node_host_prog = "$NVM_DIR/versions/node/v24.5.0/bin/neovim-node-host"
 
 -- terminal
 -- vim.o.term = "kitty"
