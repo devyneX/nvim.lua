@@ -74,7 +74,7 @@ return {
       desc = "Command History",
     },
     {
-      "<leader>n",
+      "<leader>sn",
       function()
         Snacks.picker.notifications()
       end,
@@ -467,6 +467,20 @@ return {
         Snacks.lazygit()
       end,
       desc = "Lazygit",
+    },
+    {
+      "<leader>g.",
+      function()
+        local home = vim.fn.expand("$HOME")
+
+        Snacks.lazygit.open({
+          args = {
+            "--git-dir=" .. home .. "/.dotfiles",
+            "--work-tree=" .. home,
+          },
+        })
+      end,
+      desc = "Lazygit Dotfiles",
     },
     {
       "<leader>un",
