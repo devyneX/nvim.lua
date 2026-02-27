@@ -6,6 +6,7 @@ return {
       {
         "mason-org/mason.nvim",
         cmd = "Mason",
+        build = ":MasonUpdate",
         keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
         opts = {},
       },
@@ -123,9 +124,9 @@ return {
             python = {
               analysis = {
                 -- Ignore all files for analysis to exclusively use Ruff for linting
-                ignore = { '*' },
+                ignore = { "*" },
               },
-            }
+            },
           },
         },
         ruff = {},
@@ -141,11 +142,24 @@ return {
             },
           },
         },
+        hyprls = {},
       }
 
       local ensure_installed = vim.tbl_keys(servers or {})
 
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+      servers = vim.tbl_deep_extend("force", servers, {
+        hyprlang = {
+          cmd = { "hyprls" },
+          settings = {
+            hyprls = {
+              preferIgnoreFile = false,
+              ignore = { "hyprlock.conf", "hypridle.conf" },
+            },
+          },
+        },
+      })
 
       require("mason-lspconfig").setup({
         ensure_installed = {}, -- configured with mason-tool-installer above
