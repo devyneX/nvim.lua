@@ -7,36 +7,10 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('group-highlight-yank', { clear = true }),
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight when yanking (copying) text",
+  group = vim.api.nvim_create_augroup("group-highlight-yank", { clear = true }),
   callback = function()
     vim.hl.on_yank()
   end,
 })
-
--- Hyprlang LSP
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  pattern = { "*.hl", "hypr*.conf" },
-  callback = function(event)
-    print(string.format("starting hyprls for %s", vim.inspect(event)))
-    vim.lsp.start({
-      name = "hyprlang",
-      cmd = { "hyprls" },
-      root_dir = vim.fn.getcwd(),
-    })
-  end,
-})
-
--- TODO: fix this
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
---   pattern = { "*.yuck" },
---   callback = function(event)
---     print(string.format("starting yuck;s for %s", vim.inspect(event)))
---     vim.lsp.start({
---       name = "YuckLs",
---       cmd = { "YuckLS" }, -- Replace 'YuckLS' with the actual command to run your Yuck LSP server
---       root_dir = vim.fn.getcwd(),
---     })
---   end,
--- })
