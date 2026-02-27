@@ -41,6 +41,7 @@ return {
         -- "svelte",
         -- "typst",
         -- "vue",
+        "hyprlang",
       },
       auto_install = true,
     },
