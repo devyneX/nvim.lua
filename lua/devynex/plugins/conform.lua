@@ -1,6 +1,17 @@
 return {
   "stevearc/conform.nvim",
   event = { "BufWritePre" },
+  dependencies = {
+    {
+      "mason-org/mason.nvim",
+      cmd = "Mason",
+      build = ":MasonUpdate",
+      keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" } },
+      opts = {},
+    },
+
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+  },
   keys = {
     {
       "<leader>cF",
@@ -30,15 +41,27 @@ return {
     },
   },
   config = function(_, opts)
-    if vim.g.custom_autoformat ~= false then
-      local opts_extends = {
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_format = "fallback",
-        },
-      }
-      opts = vim.tbl_deep_extend("force", opts, opts_extends)
-    end
+    local formatters = {
+      "stylua",
+      "ruff",
+      -- TODO: rustfmt is deprecated and should be installed with rustup
+      "rustfmt",
+      "prettier",
+    }
+
+    require("mason-tool-installer").setup({ ensure_installed = formatters })
+
+    -- this is a flag that will be implemented to enable auto formatting toggled
+    -- if vim.g.custom_autoformat == true then
+    local opts_extends = {
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_format = "fallback",
+      },
+    }
+    -- end
+
+    opts = vim.tbl_deep_extend("force", opts, opts_extends)
 
     require("conform").setup(opts)
   end,

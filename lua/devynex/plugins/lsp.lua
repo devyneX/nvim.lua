@@ -145,13 +145,6 @@ return {
 
       local ensure_installed = vim.tbl_keys(servers or {})
 
-      -- formatters
-      vim.list_extend(ensure_installed, {
-        "stylua",
-        "rustfmt",
-        "prettier",
-      })
-
       require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
       require("mason-lspconfig").setup({
