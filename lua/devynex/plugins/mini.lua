@@ -1,5 +1,12 @@
 return {
   {
+    "nvim-mini/mini.icons",
+    version = false,
+    config = function()
+      require("mini.icons").setup()
+    end,
+  },
+  {
     "nvim-mini/mini.pairs",
     version = false,
     event = { "BufReadPre", "BufNewFile" },
