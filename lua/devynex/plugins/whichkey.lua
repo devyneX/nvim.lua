@@ -37,6 +37,7 @@ return {
         },
         -- better descriptions
         { "gx", desc = "Open with system app" },
+        { "<leader>q", desc = "Sessions" },
       },
     },
   },
