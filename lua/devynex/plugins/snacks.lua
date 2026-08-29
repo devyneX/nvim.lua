@@ -38,11 +38,6 @@ return {
     statuscolumn = { enabled = true },
     words = { enabled = true },
     lazygit = {},
-    styles = {
-      notification = {
-        -- wo = { wrap = true } -- Wrap notifications
-      },
-    },
   },
   keys = {
     -- Top Pickers & Explorer
