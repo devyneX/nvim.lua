@@ -98,6 +98,9 @@ return {
   {
     "supermaven-inc/supermaven-nvim",
     event = { "InsertEnter", "CmdlineEnter" },
+    keys = {
+      { "<leader>ccs", "<cmd>SupermavenToggle<CR>", desc = "Toggle SuperMaven", mode = "n" },
+    },
     opts = {
       disable_inline_completion = true, -- disables inline completion for use with cmp
       disable_keymaps = true, -- disables built in keymaps for more manual control
@@ -113,6 +116,16 @@ return {
                 name = "supermaven",
                 module = "blink.compat.source",
                 score_offset = 1000,
+                enabled = function()
+                  return vim.g.SUPERMAVEN_DISABLED ~= 1
+                end,
+                transform_items = function(ctx, items)
+                  for _, item in ipairs(items) do
+                    item.kind_icon = ""
+                    item.kind_name = "SuperMaven"
+                  end
+                  return items
+                end,
               },
             },
           },
